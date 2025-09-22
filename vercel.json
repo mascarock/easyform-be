@@ -1,14 +1,6 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["dist/**"]
-      }
-    }
-  ],
+  "buildCommand": "npm run build",
   "routes": [
     {
       "src": "/favicon.ico",
@@ -21,7 +13,8 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "dist/**"
+      "includeFiles": "dist/**",
+      "runtime": "nodejs20.x"
     }
   }
 }
