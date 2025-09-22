@@ -1,6 +1,4 @@
 {
-  "version": 2,
-  "functions": {
-    "api/**/*.ts": { "runtime": "@vercel/node@20.x" }
-  }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2
 }
