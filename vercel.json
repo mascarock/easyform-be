@@ -1,14 +1,5 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": "dist/**/*"
-      }
-    }
-  ],
+  "buildCommand": "nest build",
   "routes": [
     {
       "src": "/favicon.ico",
@@ -16,7 +7,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "api/index.js"
+      "dest": "/api/index.js"
     }
   ]
 }
