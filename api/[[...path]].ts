@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../src/app.module';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import serverlessExpress from '@vendia/serverless-express';
+import { AppModule } from '../src/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -10,12 +9,15 @@ import compression from 'compression';
 import { LoggingInterceptor } from '../src/common/interceptors/logging.interceptor';
 import { HttpExceptionFilter, AllExceptionsFilter } from '../src/common/filters/http-exception.filter';
 
-// ---- COPY your main.ts global setup into this bootstrap (helmet, compression, CORS, pipes, filters, interceptors, prefix) ----
-let cached: ReturnType<typeof serverlessExpress>;
-async function bootstrap() {
+// Keep a warm instance across invocations
+let expressApp: any;
+
+async function getServer() {
+  if (expressApp) return expressApp;
+
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
-  // from main.ts:
+  // Apply all the global configuration from main.ts
   const configService = app.get(ConfigService);
 
   app.use(helmet({
@@ -56,7 +58,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
 
-  // Setup Swagger documentation for serverless
+  // Setup Swagger documentation with correct path
   const config = new DocumentBuilder()
     .setTitle('EasyForm API')
     .setDescription('Secure form submission service for static websites')
@@ -68,18 +70,19 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, {
+  SwaggerModule.setup('docs', app, document, {
+    useGlobalPrefix: true,
     swaggerOptions: {
       persistAuthorization: true,
     },
   });
 
   await app.init();
-  const expressApp = app.getHttpAdapter().getInstance();
-  return serverlessExpress({ app: expressApp });
+  expressApp = app.getHttpAdapter().getInstance(); // Express instance
+  return expressApp;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (!cached) cached = await bootstrap();
-  return cached(req, res);
+  const server = await getServer();
+  return server(req, res);
 }

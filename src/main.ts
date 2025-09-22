@@ -62,7 +62,8 @@ function configureApp(app: INestApplication): void {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, {
+  SwaggerModule.setup('docs', app, document, {
+    useGlobalPrefix: true,
     swaggerOptions: {
       persistAuthorization: true,
     },
@@ -84,7 +85,7 @@ async function bootstrap() {
   await app.listen(port);
 
   logger.log(`🚀 EasyForm Backend is running on: http://localhost:${port}`);
-  logger.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
+  logger.log(`📚 API Documentation: http://localhost:${port}/api/v1/docs`);
   logger.log(`📊 Health check available at: http://localhost:${port}/api/v1/health`);
   logger.log(`📝 Form submission endpoint: http://localhost:${port}/api/v1/forms/submit`);
 }

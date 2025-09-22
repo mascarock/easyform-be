@@ -43,7 +43,7 @@ export class FormSubmission {
   @Prop({ required: false, type: Object })
   metadata?: Record<string, any>;
 
-  @Prop({ required: false, index: true })
+  @Prop({ required: false })
   sessionId?: string;
 
   @Prop({ required: false, default: false })
