@@ -19,7 +19,9 @@
     "test:integration": "jest --testPathPattern=integration.spec.ts",
     "test:db": "jest --testPathPattern=database-connectivity.spec.ts",
     "test:mongodb": "node scripts/test-mongodb-connection.js",
-    "test:all": "npm run test && npm run test:integration && npm run test:db && npm run test:e2e"
+    "test:all": "npm run test && npm run test:integration && npm run test:db && npm run test:e2e",
+    "vercel-build": "npm run build",
+    "deploy": "./deploy.sh"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
