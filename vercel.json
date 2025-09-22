@@ -13,8 +13,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "dist/**",
-      "runtime": "nodejs20.x"
+      "includeFiles": "dist/**"
     }
   }
 }
