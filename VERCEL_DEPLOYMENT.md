@@ -25,6 +25,7 @@ The `vercel.json` file is configured for NestJS deployment using Vercel's server
 ```json
 {
   "version": 2,
+  "buildCommand": "npm run build",
   "builds": [
     {
       "src": "api/index.js",

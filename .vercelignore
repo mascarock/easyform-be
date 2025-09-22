@@ -26,8 +26,8 @@ test/
 .DS_Store
 Thumbs.db
 
-# Build artifacts (keep dist/ for deployment)
-# dist/ is needed for Vercel deployment
+# Build artifacts
+# NOTE: dist/ is NOT ignored - it's needed for deployment
 
 # Documentation
 README.md
