@@ -5,7 +5,7 @@ export type DraftSubmissionDocument = DraftSubmission & Document;
 
 @Schema({ timestamps: true })
 export class DraftSubmission {
-  @Prop({ required: true, unique: true, index: true })
+  @Prop({ required: true, unique: true })
   sessionId: string;
 
   @Prop({ required: false, index: true })
@@ -20,7 +20,7 @@ export class DraftSubmission {
   @Prop({ required: true, index: true })
   lastModified: Date;
 
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   expiresAt: Date;
 
   @Prop({ required: false })
