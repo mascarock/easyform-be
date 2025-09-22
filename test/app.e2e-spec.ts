@@ -1,9 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { FormSubmissionDto } from '../src/common/dto/form-submission.dto';
 import { QuestionType } from '../src/common/dto/question.dto';
+import { LoggingInterceptor } from '../src/common/interceptors/logging.interceptor';
+import { AllExceptionsFilter, HttpExceptionFilter } from '../src/common/filters/http-exception.filter';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -14,6 +17,26 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalPipes(new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }));
+    app.useGlobalInterceptors(new LoggingInterceptor());
+    app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
+
+    const configService = app.get(ConfigService);
+    app.enableCors({
+      origin: configService.get('app.corsOrigin'),
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      credentials: true,
+    });
+
     await app.init();
   });
 
