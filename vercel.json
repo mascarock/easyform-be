@@ -1,19 +1,13 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "nodejs20.x"
     }
-  ],
+  },
+  "buildCommand": "npm run build",
   "routes": [
-    {
-      "src": "/favicon.ico",
-      "dest": "/public/favicon.ico"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.js"
-    }
+    { "src": "/favicon\\.(ico|png)", "dest": "/favicon.$1" },
+    { "src": "/api/(.*)", "dest": "/api/$1" }
   ]
 }

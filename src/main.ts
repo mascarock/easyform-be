@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -7,12 +8,9 @@ import { AppModule } from './app.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { HttpExceptionFilter, AllExceptionsFilter } from './common/filters/http-exception.filter';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+function configureApp(app: INestApplication): void {
   const configService = app.get(ConfigService);
-  const logger = new Logger('Bootstrap');
 
-  // Security middleware
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
@@ -25,10 +23,8 @@ async function bootstrap() {
     crossOriginEmbedderPolicy: false,
   }));
 
-  // Compression middleware
   app.use(compression());
 
-  // CORS configuration
   app.enableCors({
     origin: configService.get('app.corsOrigin'),
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -36,24 +32,34 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // Global validation pipe
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-    transformOptions: {
-      enableImplicitConversion: true,
-    },
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
-  // Global interceptors
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // Global exception filters
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
-  // Global prefix
   app.setGlobalPrefix('api/v1');
+}
+
+export async function createNestApp() {
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  configureApp(app);
+  return app;
+}
+
+async function bootstrap() {
+  const app = await createNestApp();
+  const configService = app.get(ConfigService);
+  const logger = new Logger('Bootstrap');
 
   const port = configService.get('app.port') || 3001;
   await app.listen(port);
@@ -63,7 +69,11 @@ async function bootstrap() {
   logger.log(`📝 Form submission endpoint: http://localhost:${port}/api/v1/forms/submit`);
 }
 
-bootstrap().catch((error) => {
-  console.error('Error starting the application:', error);
-  process.exit(1);
-});
+if (require.main === module) {
+  bootstrap().catch((error) => {
+    console.error('Error starting the application:', error);
+    process.exit(1);
+  });
+}
+
+export { bootstrap };
