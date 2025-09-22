@@ -20,33 +20,23 @@ This creates the `dist/` directory with compiled JavaScript files.
 
 ### 2. Configure Vercel
 
-The `vercel.json` file is already configured for NestJS deployment:
+The `vercel.json` file is configured for NestJS deployment using Vercel's API routes:
 
 ```json
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "dist/main.js",
-      "use": "@vercel/node"
+      "source": "/(.*)",
+      "destination": "/api/main"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/main.js"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "dist/main.js": {
-      "maxDuration": 30
-    }
-  }
+  ]
 }
 ```
+
+This configuration:
+- Routes all requests to the `/api/main` serverless function
+- Uses the built NestJS application from the `dist/` directory
+- Avoids conflicts between `builds` and `functions` properties
 
 ### 3. Environment Variables
 
