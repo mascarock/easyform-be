@@ -1,4 +1,4 @@
-import { IsObject, IsString, IsOptional, IsEmail, IsDateString, ValidateNested, IsArray } from 'class-validator';
+import { IsObject, IsString, IsOptional, IsEmail, IsDateString, ValidateNested, IsArray, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 import { QuestionDto } from './question.dto';
 
@@ -31,6 +31,14 @@ export class FormSubmissionDto {
   @IsOptional()
   @IsDateString()
   submittedAt?: string;
+
+  @IsOptional()
+  @IsString()
+  sessionId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  convertFromDraft?: boolean;
 }
 
 export class FormSubmissionResponseDto {

@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { FormsModule } from './modules/forms/forms.module';
+import { DraftsModule } from './modules/drafts/drafts.module';
 import { HealthModule } from './modules/health/health.module';
 import databaseConfig from './config/database.config';
 import appConfig from './config/app.config';
@@ -26,6 +27,7 @@ import appConfig from './config/app.config';
       }],
     }),
     FormsModule,
+    DraftsModule,
     HealthModule,
   ],
 })

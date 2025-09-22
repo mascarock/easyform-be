@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FormsService } from './forms.service';
 import { FormValidationService } from '../../common/validators/form-validation.validator';
 import { FormSubmission, FormSubmissionSchema, FormSubmissionDocument } from '../../common/schemas/form-submission.schema';
+import { DraftSubmission, DraftSubmissionSchema, DraftSubmissionDocument } from '../../common/schemas/draft-submission.schema';
 import { FormSubmissionDto } from '../../common/dto/form-submission.dto';
 import { QuestionType } from '../../common/dto/question.dto';
 import { Model } from 'mongoose';
@@ -39,6 +40,7 @@ describe('FormsService Integration Tests', () => {
         MongooseModule.forRoot(testDbUri),
         MongooseModule.forFeature([
           { name: FormSubmission.name, schema: FormSubmissionSchema },
+          { name: DraftSubmission.name, schema: DraftSubmissionSchema },
         ]),
       ],
       providers: [

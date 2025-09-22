@@ -42,6 +42,21 @@ export class FormSubmission {
 
   @Prop({ required: false, type: Object })
   metadata?: Record<string, any>;
+
+  @Prop({ required: false, index: true })
+  sessionId?: string;
+
+  @Prop({ required: false, default: false })
+  isDraft?: boolean;
+
+  @Prop({ required: false })
+  draftSessionId?: string;
+
+  @Prop({ required: false, default: 1 })
+  submissionAttempts?: number;
+
+  @Prop({ required: false })
+  lastSubmissionAttempt?: Date;
 }
 
 export const FormSubmissionSchema = SchemaFactory.createForClass(FormSubmission);
@@ -50,3 +65,5 @@ export const FormSubmissionSchema = SchemaFactory.createForClass(FormSubmission)
 FormSubmissionSchema.index({ formId: 1, submittedAt: -1 });
 FormSubmissionSchema.index({ userEmail: 1, submittedAt: -1 });
 FormSubmissionSchema.index({ submittedAt: -1 });
+FormSubmissionSchema.index({ sessionId: 1 }); // For draft conversion tracking
+FormSubmissionSchema.index({ lastSubmissionAttempt: -1 }); // For submission protection
