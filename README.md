@@ -1,7 +1,6 @@
 # EasyForm Backend
 
-A highly secure and robust backend service for handling form submissions from the EasyForm frontend. Built with NestJS, MongoDB, and comprehensive security features.
-
+A highly secure and robust backend service for handling form submissions from the EasyForm frontend. Built with NestJS, MongoDB, and comprehensive security features. 
 ## Features
 
 - 🔒 **High Security**: Input validation, sanitization, rate limiting, and CORS protection
