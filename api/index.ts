@@ -4,6 +4,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import serverlessExpress from '@vendia/serverless-express';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression from 'compression';
 import { LoggingInterceptor } from '../src/common/interceptors/logging.interceptor';
@@ -54,6 +55,24 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
   app.setGlobalPrefix('api/v1');
+
+  // Setup Swagger documentation for serverless
+  const config = new DocumentBuilder()
+    .setTitle('EasyForm API')
+    .setDescription('Secure form submission service for static websites')
+    .setVersion('1.0.1')
+    .addTag('forms', 'Form submission endpoints')
+    .addTag('drafts', 'Draft management endpoints')
+    .addTag('health', 'Health check endpoints')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   await app.init();
   const expressApp = app.getHttpAdapter().getInstance();

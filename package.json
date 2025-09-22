@@ -40,7 +40,9 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "@vendia/serverless-express": "^4.10.3",
-    "@vercel/node": "^3.2.16"
+    "@vercel/node": "^3.2.16",
+    "@nestjs/swagger": "^7.1.17",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

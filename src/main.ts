@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import type { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import compression from 'compression';
 import { AppModule } from './app.module';
@@ -48,6 +49,24 @@ function configureApp(app: INestApplication): void {
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
   app.setGlobalPrefix('api/v1');
+
+  // Setup Swagger documentation
+  const config = new DocumentBuilder()
+    .setTitle('EasyForm API')
+    .setDescription('Secure form submission service for static websites')
+    .setVersion('1.0.1')
+    .addTag('forms', 'Form submission endpoints')
+    .addTag('drafts', 'Draft management endpoints')
+    .addTag('health', 'Health check endpoints')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 }
 
 export async function createNestApp() {
@@ -65,6 +84,7 @@ async function bootstrap() {
   await app.listen(port);
 
   logger.log(`🚀 EasyForm Backend is running on: http://localhost:${port}`);
+  logger.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
   logger.log(`📊 Health check available at: http://localhost:${port}/api/v1/health`);
   logger.log(`📝 Form submission endpoint: http://localhost:${port}/api/v1/forms/submit`);
 }
