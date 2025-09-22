@@ -1,16 +1,6 @@
-// Vercel serverless function for NestJS using ts-node
-require('ts-node').register({
-  project: require('path').join(__dirname, '..', 'tsconfig.json'),
-  transpileOnly: true,
-  compilerOptions: {
-    module: 'commonjs',
-    target: 'es2020'
-  }
-});
-require('tsconfig-paths/register');
-
+// Vercel serverless function for NestJS using compiled JavaScript
 const { NestFactory } = require('@nestjs/core');
-const { AppModule } = require('../src/app.module');
+const { AppModule } = require('../dist/src/app.module');
 
 let app;
 
