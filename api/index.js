@@ -1,12 +1,34 @@
-// Vercel serverless function for NestJS using compiled JavaScript
 const { NestFactory } = require('@nestjs/core');
-const { AppModule } = require('../dist/src/app.module');
 
 let app;
 
 const createApp = async () => {
   if (!app) {
-    app = await NestFactory.create(AppModule);
+    // Use ts-node to compile TypeScript at runtime
+    require('ts-node').register({
+      transpileOnly: true,
+      compilerOptions: {
+        module: 'commonjs',
+        target: 'es2020',
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        experimentalDecorators: true,
+        emitDecoratorMetadata: true
+      }
+    });
+
+    // Import the TypeScript AppModule
+    const { AppModule } = require('../src/app.module');
+
+    app = await NestFactory.create(AppModule, {
+      logger: ['error', 'warn', 'log']
+    });
+
+    app.enableCors({
+      origin: true,
+      credentials: true
+    });
+
     await app.init();
   }
   return app;
@@ -16,8 +38,7 @@ module.exports = async (req, res) => {
   try {
     const nestApp = await createApp();
     const expressApp = nestApp.getHttpAdapter().getInstance();
-    
-    // Handle the request with Express
+
     return new Promise((resolve, reject) => {
       expressApp(req, res, (err) => {
         if (err) {
@@ -31,10 +52,10 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error('Error in Vercel function:', error);
     if (!res.headersSent) {
-      return res.status(500).json({ 
-        success: false, 
+      return res.status(500).json({
+        success: false,
         message: 'Internal server error',
-        error: error.message 
+        error: error.message
       });
     }
   }
