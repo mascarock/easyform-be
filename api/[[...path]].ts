@@ -83,6 +83,15 @@ async function getServer() {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const server = await getServer();
-  return server(req, res);
+  try {
+    const server = await getServer();
+    return server(req, res);
+  } catch (error) {
+    console.error('Handler error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
 }
