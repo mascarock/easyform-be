@@ -20,6 +20,7 @@ import {
   SaveDraftDto,
   DraftSubmissionResponseDto,
   GetDraftResponseDto,
+  GetDraftUnionResponseDto,
   DeleteDraftResponseDto,
   CleanupDraftsResponseDto,
 } from '../../common/dto/draft-submission.dto';
@@ -50,16 +51,25 @@ export class DraftsController {
 
   @Get(':sessionId')
   @HttpCode(HttpStatus.OK)
-  async getDraft(@Param('sessionId') sessionId: string): Promise<GetDraftResponseDto> {
+  async getDraft(@Param('sessionId') sessionId: string): Promise<GetDraftUnionResponseDto> {
     this.logger.log(`Received draft retrieval request for session: ${sessionId}`);
 
     const draft = await this.draftsService.getDraft(sessionId);
 
     if (!draft) {
-      throw new NotFoundException('Draft not found or expired');
+      this.logger.log(`No draft found for session: ${sessionId} - returning empty response`);
+      return {
+        success: true,
+        message: 'No draft found for this session',
+        draft: null,
+      };
     }
 
-    return draft;
+    return {
+      success: true,
+      message: 'Draft retrieved successfully',
+      draft: draft,
+    };
   }
 
   @Delete(':sessionId')

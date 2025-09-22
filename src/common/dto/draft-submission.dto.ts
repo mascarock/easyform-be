@@ -13,6 +13,9 @@ export class SaveDraftDto {
 
   @IsNumber()
   currentStep: number;
+
+  @IsOptional()
+  questions?: any[];
 }
 
 export class DraftSubmissionResponseDto {
@@ -30,6 +33,12 @@ export class GetDraftResponseDto {
   currentStep: number;
   lastModified: string;
   expiresAt: string;
+}
+
+export class GetDraftUnionResponseDto {
+  success: boolean;
+  message: string;
+  draft: GetDraftResponseDto | null;
 }
 
 export class DeleteDraftResponseDto {
