@@ -70,10 +70,7 @@ async function bootstrap() {
 }
 
 if (require.main === module) {
-  bootstrap().catch((error) => {
-    console.error('Error starting the application:', error);
-    process.exit(1);
-  });
+  bootstrap().catch((e) => { console.error('Error starting the application:', e); process.exit(1); });
 }
 
 export { bootstrap };

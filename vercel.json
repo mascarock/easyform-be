@@ -1,13 +1,6 @@
 {
   "version": 2,
   "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "buildCommand": "npm run build",
-  "routes": [
-    { "src": "/favicon\\.(ico|png)", "dest": "/public/favicon.$1" },
-    { "src": "/(.*)", "dest": "/api/index" }
-  ]
+    "api/**/*.ts": { "runtime": "nodejs20.x" }
+  }
 }
